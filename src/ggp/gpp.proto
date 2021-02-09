@@ -1,0 +1,12 @@
+syntax = "proto3"
+
+package yama.protocol
+
+option optimeze_for = SPEED
+option cc_enable_arena = true
+
+
+message header {
+    // sequence id of message
+    uint32 seq = 1;
+}
