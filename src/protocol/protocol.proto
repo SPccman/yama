@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package yama.protocol;
+
+option optimeze_for    = SPEED;
+option cc_enable_arena = true;
+
+// device type of YAMA
+enum YAMA_DEVICE_TYPE {
+    // stateful service endpoint device
+    YSFE = 1;
+    // stateless service endpoint device
+    YSLE = 2;
+    // stateful service router device
+    YSFR = 3;
+    // YAMA
+    YAMA = 4;
+}
+
+// information of a service endpoint
+message service_info {
+    // tcp://ip:port
+    string url = 1;
+    // service name
+    string name = 2;
+    // device type
+    YAMA_DEVICE_TYPE device_type = 3;
+    // device id
+    uint32 device_id = 4;
+}
+
+// list of alive service
+message alive_services {
+    repeated services_info = 1;
+}
+
+message keep_alive_data {
+    uint32 time_stamp = 1;
+}
+
+// message header
+message msg_header {
+    uint32 version = 1;
+    uint32 type    = 2;
+    // sequence id of messege
+    uint32 seq = 3;
+    // source device id
+    uint32 src_id = 4;
+    // general retcode
+    int32 ret = 5;
+}
+
+// transport payload
+message trans_msg {
+    msg_header header = 1;
+
+    oneof body {
+        // service regist
+        service_info service_reg_req = 2;
+        service_info service_reg_rsp = 3;
+
+        // service discovery
+        alive_services alive_list       = 4;
+        service_info service_online     = 5;
+        service_info service_offline    = 6;
+
+        // keep alive
+        keep_alive_data ping_req    = 7;
+        keep_alive_data pong_rsp    = 8;
+
+        // custom message
+        // ...
+
+    }
+}
