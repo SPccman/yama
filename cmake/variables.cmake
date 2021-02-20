@@ -1,0 +1,52 @@
+if(NOT YAMA_TOOLKIT_VARIABLES)
+    set(YAMA_TOOLKIT_VARIABLES ON)
+    set_not_exists(YAMA_TOOLKIT_VARIABLES ON)
+
+    if(CMAKE_SYSTEM_NAME MATCHES Linux)
+        set(CMAKE_SYSTEM_NAME_LOWER linux)
+
+        set(DEFAULT_BUILD_TYPE Debug)
+        if(CMAKE_BUILD_TYPE STREQUAL "")
+            set(CMAKE_BUILD_TYPE ${DEFAULT_BUILD_TYPE} CACHE STRING "Choose the type of build.[Debug|Release|RelWithDebInfo|MinSizeRel]" FORCE)
+        endif()
+        string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOWER)
+
+        string(APPEND CMAKE_CXX_FLAGS " -fPIC")
+
+        set(PLAT_LIBS dl pthread)
+    elseif(CMAKE_SYSTEM_NAME MATCHES Windows)
+        set(CMAKE_SYSTEM_NAME_LOWER win)
+
+        string(APPEND CMAKE_CXX_FLAGS " /MP -wd4251 -wd4275 -wd4819 -DWIN32_LEAN_AND_MEAN -D_WIN32=0x0601 -D_CRT_SECURE_NO_WARNINGS")
+        string(APPEND CMAKE_CXX_FLAGS_DEBUG " /MDd")
+        string(APPEND CMAKE_CXX_FLAGS_RELEASE " /MD")
+        string(APPEND CMAKE_CXX_FLAGS_MINSIZEREL " /MD")
+        string(APPEND CMAKE_CXX_FLAGS_RELWITHDEBINFO " /MD")
+    else()
+        message(FATAL_ERROR "Unsupported operating system. ${CMAKE_SYSTEM_NAME}")
+    endif()
+
+    set_not_exists(YAMA_TEST_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
+    set_not_exists(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG             ${CMAKE_SOURCE_DIR}/bin/debug/exe)
+    set_not_exists(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE           ${CMAKE_SOURCE_DIR}/bin/release/exe)
+    set_not_exists(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO    ${CMAKE_SOURCE_DIR}/bin/release/exe)
+    set_not_exists(CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL        ${CMAKE_SOURCE_DIR}/bin/release/exe)
+    set_not_exists(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG             ${CMAKE_SOURCE_DIR}/bin/debug/dll)
+    set_not_exists(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE           ${CMAKE_SOURCE_DIR}/bin/release/dll)
+    set_not_exists(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO    ${CMAKE_SOURCE_DIR}/bin/release/dll)
+    set_not_exists(CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL        ${CMAKE_SOURCE_DIR}/bin/release/dll)
+    set_not_exists(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG             ${CMAKE_SOURCE_DIR}/bin/debug/lib)
+    set_not_exists(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE           ${CMAKE_SOURCE_DIR}/bin/release/lib)
+    set_not_exists(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO    ${CMAKE_SOURCE_DIR}/bin/release/lib)
+    set_not_exists(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL        ${CMAKE_SOURCE_DIR}/bin/release/lib)
+    set_not_exists(CMAKE_BUILD_RPATH                                "$ORIGIN/../dll")
+
+    set_not_exists(YAMA_INSTALL_PREFIX                            ${CMAKE_SOURCE_DIR}/publish)
+    set_not_exists(YAMA_INSTALL_RPATH                             "$ORIGIN/yama_lib;$ORIGIN/lib;$ORIGIN/std_lib;$ORIGIN/../yama_lib;$ORIGIN/../lib;$ORIGIN/../std_lib")
+
+    if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        set(CMAKE_INSTALL_PREFIX                                    ${YAMA_INSTALL_PREFIX} CACHE PATH "..." FORCE)
+        set(CMAKE_INSTALL_RPATH                                     ${YAMA_INSTALL_RPATH} CACHE PATH "..." FORCE)
+    endif ()
+endif()

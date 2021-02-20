@@ -1,0 +1,13 @@
+if(NOT _CMAKE_TOOLKIT_SUBDIR_LIST_)
+    set(_CMAKE_TOOLKIT_SUBDIR_LIST_ ON)
+
+    function(subdir_list result curdir)
+        file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+        foreach(child ${children})
+            if(IS_DIRECTORY ${curdir}/${child})
+                list(APPEND dirlist ${child} )
+            endif()
+        endforeach()
+        set(${result} ${dirlist} PARENT_SCOPE)
+    endfunction(subdir_list)
+endif()

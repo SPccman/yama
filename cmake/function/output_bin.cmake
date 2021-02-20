@@ -1,0 +1,10 @@
+if(NOT _CMAKE_TOOLKIT_OUTPUT_BIN_)
+    set(_CMAKE_TOOLKIT_OUTPUT_BIN_ ON)
+
+    function(output_bin)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG            ${BIN_OUTPUT}/debug/exe     PARENT_SCOPE)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE          ${BIN_OUTPUT}/release/exe	PARENT_SCOPE)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO   ${BIN_OUTPUT}/release/exe	PARENT_SCOPE)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL       ${BIN_OUTPUT}/release/exe	PARENT_SCOPE)
+    endfunction(output_bin)
+endif()

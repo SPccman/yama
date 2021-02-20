@@ -1,0 +1,15 @@
+if(NOT _CMAKE_TOOLKIT_CMAKE_SET_INSTALL_)
+    set(_CMAKE_TOOLKIT_CMAKE_SET_INSTALL_ ON)
+
+    function(cmake_set_install projectName)
+        get_target_property(target_type ${projectName} TYPE)
+        if (target_type STREQUAL "EXECUTABLE")
+            install(TARGETS ${projectName} CONFIGURATIONS Debug RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/debug)
+            install(TARGETS ${projectName} CONFIGURATIONS Release MinSizeRel RelWithDebInfo RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/release)
+        elseif (target_type STREQUAL "SHARED_LIBRARY")
+            install(TARGETS ${projectName} CONFIGURATIONS Debug LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/debug/gamesh_lib)
+            install(TARGETS ${projectName} CONFIGURATIONS Release MinSizeRel RelWithDebInfo LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/release/gamesh_lib)
+        endif ()
+    endfunction(cmake_set_install)
+
+endif()

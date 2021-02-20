@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.18)
+
+
+set(projectName yterm)
+set(CMAKE_CXX_STANDARD 17)
+project(${projectName} CXX)
+
+# todo(42)
+# find libuv
+# find jemalloc
+
+yama_module(${projectName} STATIC)
+
+target_include_directories(${projectName} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
+
+message("THIRD_PARTY_ROOT_PATH: ${THIRD_PARTY_ROOT_PATH}")
+
+# include
+target_include_directories(${projectName} PRIVATE ${THIRD_PARTY_ROOT_PATH}/libuv/include)
+target_include_directories(${projectName} PRIVATE ${THIRD_PARTY_ROOT_PATH}/jemalloc/include)
+
+# libs
+target_link_directories(${projectName} PRIVATE ${THIRD_PARTY_ROOT_PATH}/libuv/.libs)
+target_link_directories(${projectName} PRIVATE ${THIRD_PARTY_ROOT_PATH}/jemalloc/lib)
+
+target_link_libraries(${projectName} uv jemalloc)
