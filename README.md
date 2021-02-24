@@ -11,8 +11,8 @@ This is a group of tools witch can be used to establish server's network topolog
 # term
 - Y-SFE: stateful service endpoint
 - Y-SLE: stateless service endpoint
-- Y-SFR: stateful service router(object message proxy)
-- Y-SLR: stateless service router(object message proxy)
+- Y-SFR: stateful service router(object proxy)
+- Y-SLR: stateless service router(object proxy)
 - Y-OR: object router(used to allocate object)
 - YAMA: yama's brain
 
