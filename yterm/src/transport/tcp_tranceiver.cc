@@ -16,7 +16,36 @@
 namespace yama {
     namespace transport {
         /***************uv callbacks*****************************/
-        static void UvOnTCPConnection(uv_stream_t * stream, int status) {
+
+        /**
+         * @brief set up a ConnAddr
+         *
+         * @Param addr
+         * @Param scheme
+         * @Param host
+         * @Param port
+         */
+        void MakeAddr(ConnAddr &addr, const char * scheme, const char * host,  int port);
+
+        static void UvOnTCPClose(uv_handle_t * peer) {
+            free(peer);
+        }
+
+        static void UVOnTCPClose(uv_handle_t * peer) {
+        }
+
+        static void UVOnTCPClientConnection(uv_connect_t * req, int status) {
+        }
+
+        static void UVOnServerClose(uv_handle_t * peer) {
+        }
+        /**
+         * @brief  used by tcp server, accept a client connection
+         *
+         * @Param stream
+         * @Param status
+         */
+        static void UVOnTCPConnection(uv_stream_t * stream, int status) {
             // listen connection
             TCPConnection * listen_conn  = (TCPConnection *)stream->data;
             assert(listen_conn);
@@ -41,12 +70,25 @@ namespace yama {
                     ret = EN_YAMA_ERR_TCP_FD_FAILED;
                     break;
                 }
-            }while(false);
+            } while(false);
 
             if(ret != EN_YAMA_SUCCESS) {
-                free(client);
+                // free(client);
+                uv_close((uv_handle_t *)client, UvOnTCPClose);
                 return;
             }
+
+            // peer addr
+            struct sockaddr addr;
+            int name_len = sizeof(addr);
+            uv_tcp_getpeername(client, &addr, &name_len);
+
+            if(addr.sa_family == AF_INET6) {
+                //todo(42): implement it
+            } else if(addr.sa_family == AF_INET) {
+
+            }
+
 
             TCPConnection * client_conn = new TCPConnection();
             client_conn->m_fd_ = lfd;
@@ -55,11 +97,34 @@ namespace yama {
 
             client_conn->m_transceiver_->AddToPool(client_conn);
 
+
         }
         
-        static void UvOnTCPClose(uv_handle_t * peer) {
-            free(peer);
+
+        /**
+         * @brief uv callback, receive data
+         *
+         * @Param stream
+         * @Param n_read
+         * @Param buf
+         */
+        static void UVOnRead(uv_stream_t * stream, ssize_t n_read, const uv_buf_t * buf) {
         }
+
+        /**
+         * @brief uv callback, used to alloc a buf to recv data
+         *
+         * @Param handle
+         * @Param size, suggested_size
+         * @Param buf
+         */
+        static void UVRecvAlloc(uv_handle_t *handle, size_t size, uv_buf_t * buf) {
+        }
+
+        static void UVOnWrite(uv_write_t * req, int status) {
+        }
+
+
         
 
 
@@ -96,7 +161,7 @@ namespace yama {
                     break;
                 }
 
-                if(uv_listen((uv_stream_t *)server, SOMAXCONN, UvOnTCPConnection)) {
+                if(uv_listen((uv_stream_t *)server, SOMAXCONN, UVOnTCPConnection)) {
                     LOG_ERROR("uv_listen failed err(%s)", uv_err_name(ret));
                     ret = EN_YAMA_ERR_TCP_LISTEN_FAILED;
                     break;
@@ -120,6 +185,8 @@ namespace yama {
             tcp_conn->m_stream_handle_ = (uv_stream_t *)server;
             tcp_conn->m_transceiver_ = this;
             m_connections_[lfd] = tcp_conn;
+
+            //todo(42): set some socket flags
 
             // save tcp_conn to server
             ((uv_stream_t *)server)->data = tcp_conn;

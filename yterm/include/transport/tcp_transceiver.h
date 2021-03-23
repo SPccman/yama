@@ -19,28 +19,19 @@
 
 namespace yama {
     namespace transport {
-        // uv callbacks
-        /**
-         * @brief  used by tcp server, accept a client connection
-         *
-         * @Param stream
-         * @Param status
-         */
-        static void UVOnTCPConnection(uv_stream_t * stream, int status);
-        static void UVOnTCPClose(uv_handle_t * peer);
-
-        /**
-         * @brief used by tcp client, return connect status
-         *
-         * @Param req
-         * @Param status
-         */
-        static void UVOnTCPClientConnection(uv_connect_t * req, int status);
-        static void UVOnServerClose(uv_handle_t * peer);
-        static void UVOnRead(uv_stream_t * stream, ssize_t n_read, const uv_buf_t * buf);
-        static void UVOnWrite(uv_write_t * req, int status);
 
         class TCPTransceiver;
+
+        /**
+         * @brief describe address of a connection
+         */
+        void MakeAddr(ConnAddr &addr, const char * scheme, const char * host,  int port);
+        struct ConnAddr {
+            std::string m_scheme_;  // address type, ip4/ip6/shm/
+            std::string m_addr_;    // complete address, example, ip4://127.0.0.1:8888
+            int m_port_;            // port
+            std::string m_host;     // host addr, example, 127.0.0.1
+        };
 
         /**
          * @brief describe a tcp connection.
@@ -48,10 +39,15 @@ namespace yama {
         struct TCPConnection {
             // socket fd
             uv_os_fd_t m_fd_; 
+            // addr of this connection
+            ConnAddr m_addr_;
             // uv stream object
             uv_stream_t * m_stream_handle_;
             // TCPTransceiver 
             TCPTransceiver * m_transceiver_;
+            
+            // readbuf 
+            // writebuf
         };
 
         
