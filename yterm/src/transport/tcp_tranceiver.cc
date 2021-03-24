@@ -31,6 +31,39 @@ namespace yama {
             free(peer);
         }
 
+        /**
+         * @brief uv callback, receive data
+         *
+         * @Param stream
+         * @Param n_read
+         * @Param buf
+         */
+        static void UVOnRead(uv_stream_t * stream, ssize_t n_read, const uv_buf_t * buf) {
+            if(n_read > 0) {
+                // out put it
+                buf->base[n_read-1] = 0;
+                LOG_INFO("read msg(%s)", buf->base);
+            } else {
+                LOG_ERROR("read err size(%ld)", n_read);
+            }
+        }
+
+        /**
+         * @brief uv callback, used to alloc a buf to recv data
+         *
+         * @Param handle
+         * @Param size, suggested_size
+         * @Param buf
+         */
+        static void UVRecvAlloc(uv_handle_t *handle, size_t size, uv_buf_t * buf) {
+            // default usage
+            buf->base = (char *)malloc(size);
+            buf->len = size;
+        }
+
+        static void UVOnWrite(uv_write_t * req, int status) {
+        }
+
         static void UVOnTCPClose(uv_handle_t * peer) {
         }
 
@@ -39,6 +72,7 @@ namespace yama {
 
         static void UVOnServerClose(uv_handle_t * peer) {
         }
+
         /**
          * @brief  used by tcp server, accept a client connection
          *
@@ -94,35 +128,12 @@ namespace yama {
             client_conn->m_fd_ = lfd;
             client_conn->m_stream_handle_ = (uv_stream_t *)client;
             client_conn->m_transceiver_ = listen_conn->m_transceiver_;
-
             client_conn->m_transceiver_->AddToPool(client_conn);
 
-
+            // start reading
+            uv_read_start((uv_stream_t *)client, UVRecvAlloc, UVOnRead);
         }
         
-
-        /**
-         * @brief uv callback, receive data
-         *
-         * @Param stream
-         * @Param n_read
-         * @Param buf
-         */
-        static void UVOnRead(uv_stream_t * stream, ssize_t n_read, const uv_buf_t * buf) {
-        }
-
-        /**
-         * @brief uv callback, used to alloc a buf to recv data
-         *
-         * @Param handle
-         * @Param size, suggested_size
-         * @Param buf
-         */
-        static void UVRecvAlloc(uv_handle_t *handle, size_t size, uv_buf_t * buf) {
-        }
-
-        static void UVOnWrite(uv_write_t * req, int status) {
-        }
 
 
         

@@ -1,5 +1,5 @@
 # summary
-This is a group of tools witch can be used to establish server's network topology quickly.
+This is a group of tools witch can be used for establishing server's network topology quickly.
 
 # directories
 - sys_services: yama system services
