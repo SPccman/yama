@@ -67,7 +67,38 @@ namespace yama {
         static void UVOnTCPClose(uv_handle_t * peer) {
         }
 
-        static void UVOnTCPClientConnection(uv_connect_t * req, int status) {
+        static void UVOnTCPConnect(uv_connect_t * req, int status) {
+            if (status < 0) {
+                // todo(42): free req 
+                return;
+            }
+
+            int ret = EN_YAMA_SUCCESS;
+            uv_os_fd_t lfd = -1;
+            uv_tcp_t * client = (uv_tcp_t *)req->handle;
+            do {
+
+                if(uv_fileno((uv_handle_t *)client, &lfd)) {
+                    LOG_ERROR("uv_fileno failed err(%s)", uv_err_name(ret));
+                    ret = EN_YAMA_ERR_TCP_FD_FAILED;
+                    break;
+                }
+            } while(false);
+
+            if(ret != EN_YAMA_SUCCESS) {
+                // todo(42): free(client);
+                uv_close((uv_handle_t *)client, UvOnTCPClose);
+                return;
+            }
+
+            TCPConnection * client_conn = new TCPConnection();
+            client_conn->m_fd_ = lfd;
+            client_conn->m_stream_handle_ = (uv_stream_t *)client;
+            client_conn->m_transceiver_ = listen_conn->m_transceiver_;
+            client_conn->m_transceiver_->AddToPool(client_conn);
+
+            // start reading
+            uv_read_start((uv_stream_t *)client, UVRecvAlloc, UVOnRead);
         }
 
         static void UVOnServerClose(uv_handle_t * peer) {
@@ -201,6 +232,20 @@ namespace yama {
 
             // save tcp_conn to server
             ((uv_stream_t *)server)->data = tcp_conn;
+
+            return 0;
+        }
+
+        int TCPTransceiver::Connect(std::string & host, int port) {
+            uv_tcp_t * socket = (uv_tcp_t *)malloc(sizeof(uv_tcp_t));
+            uv_tcp_init(m_ev_loop_, socket);
+
+            uv_connect_t * connection = (uv_connect_t *)malloc(sizeof(uv_connect_t));
+
+            struct sockaddr_in dest;
+            uv_ip4_addr(host.c_str(), port, &dest);
+
+            uv_tcp_connect(connection, socket, (const struct sockaddr *)&dest, UVOnTCPConnect);
 
             return 0;
         }
