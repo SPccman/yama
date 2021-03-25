@@ -25,13 +25,14 @@ namespace yama {
         /**
          * @brief describe address of a connection
          */
-        void MakeAddr(ConnAddr &addr, const char * scheme, const char * host,  int port);
         struct ConnAddr {
             std::string m_scheme_;  // address type, ip4/ip6/shm/
             std::string m_addr_;    // complete address, example, ip4://127.0.0.1:8888
             int m_port_;            // port
             std::string m_host;     // host addr, example, 127.0.0.1
         };
+
+        void MakeAddr(ConnAddr &addr, const char * scheme, const char * host,  int port);
 
         /**
          * @brief describe a tcp connection.
