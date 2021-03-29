@@ -9,6 +9,10 @@ project(yama)
 # add cmake tool file
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/yama.cmake)
 
+# 3rd_party
+include (${CMAKE_SOURCE_DIR}/3rd_party/3rd_party.prepar.cmake)
+include (${CMAKE_SOURCE_DIR}/3rd_party/3rd_party.macro.cmake)
+
 
 add_subdirectory(yterm)
 add_subdirectory(tests)
