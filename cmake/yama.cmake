@@ -14,4 +14,5 @@ if(NOT YAMA_CMAKE_ENTRY)
 
     # include cmake files
     include(${CMAKE_CURRENT_LIST_DIR}/module.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/variables.cmake)
 endif()
