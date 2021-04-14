@@ -21,6 +21,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_CMAKE_UTIL_DIR}/modules")
 
 # output with color
 include (${PROJECT_CMAKE_UTIL_DIR}/modules/EchoWithColor.cmake)
+
 # use for getting 3rd libs(source code)
 include (${PROJECT_CMAKE_UTIL_DIR}/find_configure_package.cmake)
 include (${PROJECT_CMAKE_UTIL_DIR}/project_build_option.cmake)

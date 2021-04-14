@@ -12,6 +12,9 @@ if(NOT YAMA_CMAKE_ENTRY)
         include(${CMAKE_CURRENT_LIST_DIR}/${file})
     endforeach()
 
+    # install dirs
+    # include (${CMAKE_CURRENT_LIST_DIR}/TargetOption.cmake)
+
     # include cmake files
     include(${CMAKE_CURRENT_LIST_DIR}/module.cmake)
     include(${CMAKE_CURRENT_LIST_DIR}/variables.cmake)

@@ -52,6 +52,7 @@ if(NOT YAMA_TOOLKIT_VARIABLES)
 
     # todo(42): from atsf4g-co, tidy them later
     # installer directory
+    include(GNUInstallDirs)
     if (NOT PROJECT_INSTALL_BAS_DIR)
         # set (PROJECT_INSTALL_BAS_DIR "${PROJECT_BINARY_DIR}/${PROJECT_BUILD_NAME}")
         set (PROJECT_INSTALL_BAS_DIR "${CMAKE_SOURCE_DIR}/bin")
@@ -74,4 +75,5 @@ if(NOT YAMA_TOOLKIT_VARIABLES)
     file(MAKE_DIRECTORY "${PROJECT_INSTALL_TOOLS_DIR}/bin")
     file(MAKE_DIRECTORY ${PROJECT_INSTALL_SHARED_DIR})
     file(MAKE_DIRECTORY ${PROJECT_INSTALL_RES_PBD_DIR})
+    link_directories(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endif()
