@@ -3,3 +3,4 @@ compile_commands.json
 .ccls-cache/
 3rd_party/install
 3rd_party/packages
+bin/
