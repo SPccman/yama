@@ -73,6 +73,8 @@ namespace yama {
                 return;
             }
 
+            TCPTransceiver * tcp_transceiver = (TCPTransceiver *)(req->data);
+
             int ret = EN_YAMA_SUCCESS;
             uv_os_fd_t lfd = -1;
             uv_tcp_t * client = (uv_tcp_t *)req->handle;
@@ -94,7 +96,7 @@ namespace yama {
             TCPConnection * client_conn = new TCPConnection();
             client_conn->m_fd_ = lfd;
             client_conn->m_stream_handle_ = (uv_stream_t *)client;
-            client_conn->m_transceiver_ = listen_conn->m_transceiver_;
+            client_conn->m_transceiver_ = tcp_transceiver;
             client_conn->m_transceiver_->AddToPool(client_conn);
 
             // start reading
@@ -244,6 +246,9 @@ namespace yama {
 
             struct sockaddr_in dest;
             uv_ip4_addr(host.c_str(), port, &dest);
+
+            // attach TCPTransceiver 
+            ((uv_stream_t *)connection)->data = this;
 
             uv_tcp_connect(connection, socket, (const struct sockaddr *)&dest, UVOnTCPConnect);
 
