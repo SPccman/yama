@@ -14,6 +14,9 @@ if (NOT EXISTS ${PROJECT_3RD_PARTY_INSTALL_DIR})
     file(MAKE_DIRECTORY ${PROJECT_3RD_PARTY_INSTALL_DIR})
 endif ()
 
+# =========== 3rd_party - jemalloc ===========
+include("${PROJECT_3RD_PARTY_ROOT_DIR}/jemalloc/jemalloc.cmake")
+
 # =========== 3rd_party - libuv ===========
 include("${PROJECT_3RD_PARTY_ROOT_DIR}/libuv/libuv.cmake")
 
@@ -23,6 +26,7 @@ include("${PROJECT_3RD_PARTY_ROOT_DIR}/protobuf/protobuf.cmake")
 
 # =========== 3rd_party - yaml-cpp ===========
 include("${PROJECT_3RD_PARTY_ROOT_DIR}/yaml-cpp/yaml-cpp.cmake")
+
 
 if (3RD_PARTY_PUBLIC_LINK_NAMES)
     list(REMOVE_DUPLICATES 3RD_PARTY_PUBLIC_LINK_NAMES)

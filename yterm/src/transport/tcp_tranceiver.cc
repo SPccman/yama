@@ -192,11 +192,12 @@ namespace yama {
                 // uv addr for ipv4
                 // todo(42) add support for ipv6
                 struct sockaddr_in addr;
-                if (0 == uv_ip4_addr("0.0.0.0", port, &addr)) {
-                    LOG_DEBUG("create ip4 addr failed");
-                    ret = EN_YAMA_ERR_TCP_ADDR_FAILED;
-                    break;
-                }
+                uv_ip4_addr("0.0.0.0", port, &addr);
+                /* if (0 == uv_ip4_addr("0.0.0.0", port, &addr)) {
+                 *     LOG_DEBUG("create ip4 addr failed");
+                 *     ret = EN_YAMA_ERR_TCP_ADDR_FAILED;
+                 *     break;
+                 * } */
 
                 // uv bind
                 if(uv_tcp_bind(server, (const struct sockaddr*)&addr, 0)) {
@@ -238,7 +239,7 @@ namespace yama {
             return 0;
         }
 
-        int TCPTransceiver::Connect(std::string & host, int port) {
+        int TCPTransceiver::Connect(const std::string & host, int port) {
             uv_tcp_t * socket = (uv_tcp_t *)malloc(sizeof(uv_tcp_t));
             uv_tcp_init(m_ev_loop_, socket);
 

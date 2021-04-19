@@ -77,7 +77,7 @@ namespace yama {
                  *
                  * @Returns   
                  */
-                int Connect(std::string & host, int port);
+                int Connect(const std::string & host, int port);
 
                 //int SetEvtCallbacks();
 
