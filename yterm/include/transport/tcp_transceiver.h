@@ -79,8 +79,16 @@ namespace yama {
                  */
                 int Connect(const std::string & host, int port);
 
-                //int SetEvtCallbacks();
-
+                /**
+                 * @brief send message
+                 *
+                 * @Param conn
+                 * @Param buf
+                 * @Param len
+                 *
+                 * @Returns   
+                 */
+                int Send(const TCPConnection *conn, char *buf, uint32_t len);
 
 
                 /**

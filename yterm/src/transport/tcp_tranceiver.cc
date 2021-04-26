@@ -62,6 +62,11 @@ namespace yama {
         }
 
         static void UVOnWrite(uv_write_t * req, int status) {
+            if (status < 0) {
+                LOG_ERROR("send message failed");
+            } else {
+                LOG_ERROR("send message success");
+            }
         }
 
         static void UVOnTCPClose(uv_handle_t * peer) {
@@ -236,7 +241,7 @@ namespace yama {
             // save tcp_conn to server
             ((uv_stream_t *)server)->data = tcp_conn;
 
-            return 0;
+            return ret;
         }
 
         int TCPTransceiver::Connect(const std::string & host, int port) {
@@ -253,7 +258,7 @@ namespace yama {
 
             uv_tcp_connect(connection, socket, (const struct sockaddr *)&dest, UVOnTCPConnect);
 
-            return 0;
+            return EN_YAMA_SUCCESS;
         }
 
         int TCPTransceiver::AddToPool(TCPConnection *conn) {
@@ -262,6 +267,21 @@ namespace yama {
             }
 
             m_connections_[conn->m_fd_] = conn;
+            return EN_YAMA_SUCCESS;
+        }
+
+        int TCPTransceiver::Send(const TCPConnection *conn, char *buf, uint32_t len)
+        {
+            // uv buf
+            uv_buf_t uv_buf[1] = {uv_buf_init(buf, 10)};
+
+            // uv_write_t
+            // todo(42): fix this, should create it in heap ?
+            uv_write_t req;
+
+            // uv_write
+            uv_write(&req, conn->m_stream_handle_, uv_buf, 1, UVOnWrite);
+            
             return EN_YAMA_SUCCESS;
         }
 
